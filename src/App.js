@@ -1,26 +1,47 @@
 import React from 'react';
-import logo from './logo.svg';
+import GridItem from './components/GridItem'
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      items: [],
+      showFlags: false
+    };
+
+    this.changeFlagsVisibility = this.changeFlagsVisibility.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentDidMount() {
+    fetch('https://restcountries.eu/rest/v2/all')
+    .then(res => res.json())
+    .then(data => this.setState({ items: data }));
+  }
+
+  changeFlagsVisibility() {
+    this.setState({ showFlags: !this.state.showFlags });
+  }
+
+  handleChange(e) {
+    const term = e.target.value.toLowerCase();
+    const result = this.state.items.filter(item => item.name.toLowerCase().startsWith(term));
+    console.log(result);
+  }
+
+  render() {
+    return (
+      <div>
+        <button onClick={this.changeFlagsVisibility}>{this.state.showFlags ? 'Hide' : 'Show'} flags</button>
+        <br />
+        Search: <input type="text" placeholder="..." onChange={this.handleChange} />
+        <GridItem items={this.state.items} showFlags={this.state.showFlags} />
+      </div>
+    )
+  }
 }
 
 export default App;
