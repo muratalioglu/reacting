@@ -9,11 +9,13 @@ class App extends React.Component {
 
     this.state = {
       items: [],
-      showFlags: false
+      showFlags: false,
+      order: 'asc'
     };
 
     this.changeFlagsVisibility = this.changeFlagsVisibility.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.sortItems = this.sortItems.bind(this);
   }
 
   componentDidMount() {
@@ -26,16 +28,28 @@ class App extends React.Component {
     this.setState({ showFlags: !this.state.showFlags });
   }
 
+  sortItems() {
+    this.setState({
+      items: this.state.items.reverse(),
+      order: this.state.order === 'asc' ? 'desc' : 'asc'
+    });
+  }
+
   handleChange(e) {
-    const term = e.target.value.toLowerCase();
-    const result = this.state.items.filter(item => item.name.toLowerCase().startsWith(term));
-    console.log(result);
+    const term = e.target.value.trim().toLowerCase();
+    if (term.length === 0) {
+      this.componentDidMount();
+      return;
+    }
+    const searchResult = this.state.items.filter(item => item.name.toLowerCase().startsWith(term));
+    this.setState({ items: searchResult });
   }
 
   render() {
     return (
       <div>
         <button onClick={this.changeFlagsVisibility}>{this.state.showFlags ? 'Hide' : 'Show'} flags</button>
+        <button onClick={this.sortItems}>{this.state.order === 'asc' ? 'A-Z' : 'Z-A'}</button>
         <br />
         Search: <input type="text" placeholder="..." onChange={this.handleChange} />
         <GridItem items={this.state.items} showFlags={this.state.showFlags} />

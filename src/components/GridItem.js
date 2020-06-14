@@ -3,10 +3,6 @@ import './GridItem.css';
 
 class GridItem extends React.Component {
 
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <div>
