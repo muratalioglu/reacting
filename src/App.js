@@ -9,6 +9,7 @@ class App extends React.Component {
 
     this.state = {
       items: [],
+      filteredItems: [],
       showFlags: false,
       order: 'asc'
     };
@@ -38,11 +39,11 @@ class App extends React.Component {
   handleChange(e) {
     const term = e.target.value.trim().toLowerCase();
     if (term.length === 0) {
-      this.componentDidMount();
+      this.setState({ filteredItems: [] })
       return;
     }
     const searchResult = this.state.items.filter(item => item.name.toLowerCase().startsWith(term));
-    this.setState({ items: searchResult });
+    this.setState({ filteredItems: searchResult });
   }
 
   render() {
@@ -52,7 +53,7 @@ class App extends React.Component {
         <button onClick={this.sortItems}>{this.state.order === 'asc' ? 'A-Z' : 'Z-A'}</button>
         <br />
         Search: <input type="text" placeholder="..." onChange={this.handleChange} />
-        <GridItem items={this.state.items} showFlags={this.state.showFlags} />
+        <GridItem items={this.state.filteredItems.length > 0 ? this.state.filteredItems : this.state.items} showFlags={this.state.showFlags} />
       </div>
     )
   }
